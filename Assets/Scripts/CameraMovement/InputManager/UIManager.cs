@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MovementCamera
 {
@@ -10,7 +8,7 @@ namespace MovementCamera
         public static event RotateInputHandler OnRotateInput;
         public static event ZoomInputHandler OnZoomInput;
 
-        [SerializeField] private float _retreat = 10;
+        [SerializeField] private float _retreat = 20;
         [SerializeField] private RectTransform _workField;
 
         private Vector3[] _corners = new Vector3[4];

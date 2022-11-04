@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 
@@ -7,22 +8,22 @@ namespace MovementCamera
     public class CameraManager : MonoBehaviour
     {
         [Header("Camera Positioning")]
-        public Vector2 cameraOffset = new Vector2(10f, 14f);
-        public float lookAtOffset = 2f;
+        [SerializeField] private Vector2 _cameraOffset = new Vector2(10f, 14f);
+        [SerializeField] private float _lookAtOffset = 2f;
 
         [Header("Move Controls")]
-        public float inOutSpeed = 5f;
-        public float lateralSpeed = 5f;
-        public float rotateSpeed = 5f;
+        [SerializeField] private float _inOutSpeed = 5f;
+        [SerializeField] private float _lateralSpeed = 5f;
+        [SerializeField] private float _rotateSpeed = 5f;
 
         [Header("Move Bounds")]
-        public Vector2 minBounds, maxBounds;
+        [SerializeField] private Vector2 _minBounds, _maxBounds;
 
         [Header("Zoom Controls")]
-        public float zoomSpeed = 4f;
-        public float nearZoomLimit = 2f;
-        public float farZoomLimit = 16f;
-        public float startingZoom = 5f;
+        [SerializeField] private float _zoomSpeed = 4f;
+        [SerializeField] private float _nearZoomLimit = 2f;
+        [SerializeField] private float _farZoomLimit = 16f;
+        [SerializeField] private float _startingZoom = 5f;
 
         private IZoomBehaviour _zoomBehaviour;
         private Vector3 _frameMove;
@@ -30,13 +31,64 @@ namespace MovementCamera
         private float _frameZoom;
         private Camera _camera;
 
+        [SerializeField] private GameObject[] _testList;
+        private GameObject _currentTarget;
+
+
         private void Awake()
         {
             _camera = GetComponentInChildren<Camera>();
-            _camera.transform.localPosition = new Vector3(0f, Mathf.Abs(cameraOffset.y), - Mathf.Abs(cameraOffset.x));
-            _zoomBehaviour = _camera.orthographic ? (IZoomBehaviour) new OrtographicZoomBehaviour(_camera, startingZoom) : new PerspectiveZoomBehaviour(_camera, cameraOffset, startingZoom);
-            _camera.transform.LookAt(transform.position + Vector3.up * lookAtOffset);
+            _camera.transform.localPosition = new Vector3(0f, Mathf.Abs(_cameraOffset.y), - Mathf.Abs(_cameraOffset.x));
+            _zoomBehaviour = _camera.orthographic ? (IZoomBehaviour) new OrtographicZoomBehaviour(_camera, _startingZoom) : new PerspectiveZoomBehaviour(_camera, _cameraOffset, _startingZoom);
+            _camera.transform.LookAt(transform.position + Vector3.up * _lookAtOffset);
         }
+
+        private void Update()
+        {
+            if (Input.GetKeyUp(KeyCode.F1))
+            {
+                SetTarget(_testList[0]);
+            }
+            if (Input.GetKeyUp(KeyCode.F2))
+            {
+                SetTarget(_testList[1]);
+            }
+            if (Input.GetKeyUp(KeyCode.F3))
+            {
+                SetTarget(_testList[2]);
+            }
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                SetTarget(null);
+            }
+        }
+
+        private void SetTarget(GameObject target)
+        {
+            _currentTarget = target;
+
+            if (_currentTarget != null)
+            {
+                StartCoroutine(MoveToTarget());
+            }
+        }
+        
+        IEnumerator MoveToTarget()
+        {
+            while (_currentTarget && transform.position != _currentTarget.transform.position)
+            {
+                Move();
+                yield return null;
+           }
+        }
+
+        public void Move()
+        {
+            if (_currentTarget != null)
+                transform.position = Vector3.Lerp(transform.position, _currentTarget.transform.position,
+                    Time.deltaTime);
+        }
+
 
         private void OnEnable()
         {
@@ -87,7 +139,7 @@ namespace MovementCamera
         {
             if (_frameMove != Vector3.zero)
             {
-                Vector3 speedModFrameMove = new Vector3(_frameMove.x * lateralSpeed, _frameMove.y, _frameMove.z * inOutSpeed);
+                Vector3 speedModFrameMove = new Vector3(_frameMove.x * _lateralSpeed, _frameMove.y, _frameMove.z * _inOutSpeed);
                 transform.position += transform.TransformDirection(speedModFrameMove) * Time.deltaTime;
                 LockPositionInBounds();
                 _frameMove = Vector3.zero;
@@ -95,18 +147,18 @@ namespace MovementCamera
 
             if (_frameRotate != 0f)
             {
-                transform.Rotate(Vector3.up, _frameRotate * Time.deltaTime * rotateSpeed);
+                transform.Rotate(Vector3.up, _frameRotate * Time.deltaTime * _rotateSpeed);
                 _frameRotate = 0f;
             }
 
             if (_frameZoom < 0f)
             {
-                _zoomBehaviour.ZoomIn(_camera, Time.deltaTime * Mathf.Abs(_frameZoom) * zoomSpeed, nearZoomLimit);
+                _zoomBehaviour.ZoomIn(_camera, Time.deltaTime * Mathf.Abs(_frameZoom) * _zoomSpeed, _nearZoomLimit);
                 _frameZoom = 0;
             }
             else if (_frameZoom > 0f)
             {
-                _zoomBehaviour.ZoomOut(_camera, Time.deltaTime *_frameZoom * zoomSpeed, farZoomLimit);
+                _zoomBehaviour.ZoomOut(_camera, Time.deltaTime *_frameZoom * _zoomSpeed, _farZoomLimit);
                 _frameZoom = 0;
             }
         }
@@ -114,9 +166,9 @@ namespace MovementCamera
         private void LockPositionInBounds()
         {
             transform.position = new Vector3(
-                Mathf.Clamp(transform.position.x, minBounds.x, maxBounds.x),
+                Mathf.Clamp(transform.position.x, _minBounds.x, _maxBounds.x),
                 transform.position.y,
-                Mathf.Clamp(transform.position.z, minBounds.y, maxBounds.y)
+                Mathf.Clamp(transform.position.z, _minBounds.y, _maxBounds.y)
                 );
         }
     }
