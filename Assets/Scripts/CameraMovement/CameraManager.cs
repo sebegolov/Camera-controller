@@ -43,9 +43,14 @@ namespace MovementCamera
             KeyboardManager.OnMoveInput += UpdateFrameMove;
             KeyboardManager.OnRotateInput += UpdateFrameRotate;
             KeyboardManager.OnZoomInput += UpdateFrameZoom;
+            
             MouseManager.OnMoveInput += UpdateFrameMove;
             MouseManager.OnRotateInput += UpdateFrameRotate;
             MouseManager.OnZoomInput += UpdateFrameZoom;
+            
+            UIManager.OnMoveInput += UpdateFrameMove;
+            UIManager.OnRotateInput += UpdateFrameRotate;
+            UIManager.OnZoomInput += UpdateFrameZoom;
         }
         
         private void OnDisable()
@@ -53,9 +58,14 @@ namespace MovementCamera
             KeyboardManager.OnMoveInput -= UpdateFrameMove;
             KeyboardManager.OnRotateInput -= UpdateFrameRotate;
             KeyboardManager.OnZoomInput -= UpdateFrameZoom;
+            
             MouseManager.OnMoveInput -= UpdateFrameMove;
             MouseManager.OnRotateInput -= UpdateFrameRotate;
             MouseManager.OnZoomInput -= UpdateFrameZoom;
+            
+            UIManager.OnMoveInput -= UpdateFrameMove;
+            UIManager.OnRotateInput -= UpdateFrameRotate;
+            UIManager.OnZoomInput -= UpdateFrameZoom;
         }
 
         private void UpdateFrameMove(Vector3 moveVector)

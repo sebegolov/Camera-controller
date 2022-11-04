@@ -20,6 +20,11 @@ namespace MovementCamera
             _screen = new Vector2Int(Screen.width, Screen.height);
         }
 
+        private void OnApplicationFocus(bool focus)
+        {
+            _screen = new Vector2Int(Screen.width, Screen.height);
+        }
+
         private void Update()
         {
             Vector3 mousePosition = Input.mousePosition;
