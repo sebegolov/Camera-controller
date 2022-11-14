@@ -85,8 +85,12 @@ namespace MovementCamera
         public void Move()
         {
             if (_currentTarget != null)
-                transform.position = Vector3.Lerp(transform.position, _currentTarget.transform.position,
+            {
+                Vector3 needPosition = _currentTarget.transform.position;
+                needPosition.y = 0;
+                transform.position = Vector3.Lerp(transform.position, needPosition,
                     Time.deltaTime);
+            }
         }
 
 
@@ -99,10 +103,16 @@ namespace MovementCamera
             MouseManager.OnMoveInput += UpdateFrameMove;
             MouseManager.OnRotateInput += UpdateFrameRotate;
             MouseManager.OnZoomInput += UpdateFrameZoom;
+            MouseManager.OnShiftInput += ShiftCamera;
             
             UIManager.OnMoveInput += UpdateFrameMove;
             UIManager.OnRotateInput += UpdateFrameRotate;
             UIManager.OnZoomInput += UpdateFrameZoom;
+        }
+
+        private void ShiftCamera(Vector3 shift)
+        {
+            transform.position += shift;
         }
         
         private void OnDisable()
@@ -114,6 +124,7 @@ namespace MovementCamera
             MouseManager.OnMoveInput -= UpdateFrameMove;
             MouseManager.OnRotateInput -= UpdateFrameRotate;
             MouseManager.OnZoomInput -= UpdateFrameZoom;
+            MouseManager.OnShiftInput -= ShiftCamera;
             
             UIManager.OnMoveInput -= UpdateFrameMove;
             UIManager.OnRotateInput -= UpdateFrameRotate;
