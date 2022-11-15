@@ -8,7 +8,6 @@ namespace MovementCamera
 {
     public class MouseManager : InputManager
     {
-        [SerializeField] private Text _pos;
         [SerializeField] private bool _moveScreenEdges = false;
         public static event MoveInputHandler OnMoveInput;
         public static event RotateInputHandler OnRotateInput;
@@ -100,7 +99,6 @@ namespace MovementCamera
 
                 _mousePos = newMousePos;
                 Debug.DrawRay(_camera.transform.position, ray.GetPoint(planeDistance), Color.red);
-                _pos.text = _mousePos.ToString();
             }
 
             if (Input.GetMouseButtonUp(0))

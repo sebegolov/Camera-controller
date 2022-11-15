@@ -15,6 +15,7 @@ namespace MovementCamera
         [SerializeField] private float _inOutSpeed = 5f;
         [SerializeField] private float _lateralSpeed = 5f;
         [SerializeField] private float _rotateSpeed = 5f;
+        [SerializeField] private float _speedScale = 2f;
 
         [Header("Move Bounds")]
         [SerializeField] private Vector2 _minBounds, _maxBounds;
@@ -99,6 +100,7 @@ namespace MovementCamera
             KeyboardManager.OnMoveInput += UpdateFrameMove;
             KeyboardManager.OnRotateInput += UpdateFrameRotate;
             KeyboardManager.OnZoomInput += UpdateFrameZoom;
+            KeyboardManager.OnSpeedScale += ScaleSpeed;
             
             MouseManager.OnMoveInput += UpdateFrameMove;
             MouseManager.OnRotateInput += UpdateFrameRotate;
@@ -120,7 +122,8 @@ namespace MovementCamera
             KeyboardManager.OnMoveInput -= UpdateFrameMove;
             KeyboardManager.OnRotateInput -= UpdateFrameRotate;
             KeyboardManager.OnZoomInput -= UpdateFrameZoom;
-            
+            KeyboardManager.OnSpeedScale -= ScaleSpeed;
+
             MouseManager.OnMoveInput -= UpdateFrameMove;
             MouseManager.OnRotateInput -= UpdateFrameRotate;
             MouseManager.OnZoomInput -= UpdateFrameZoom;
@@ -129,6 +132,13 @@ namespace MovementCamera
             UIManager.OnMoveInput -= UpdateFrameMove;
             UIManager.OnRotateInput -= UpdateFrameRotate;
             UIManager.OnZoomInput -= UpdateFrameZoom;
+        }
+
+        private void ScaleSpeed()
+        {
+            _frameMove *= _speedScale;
+            _frameRotate *= _speedScale;
+            _frameZoom *= _speedScale;
         }
 
         private void UpdateFrameMove(Vector3 moveVector)

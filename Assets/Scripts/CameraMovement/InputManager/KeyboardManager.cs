@@ -9,11 +9,22 @@ namespace MovementCamera
         public static event RotateInputHandler OnRotateInput;
         public static event ZoomInputHandler OnZoomInput;
 
+        public static Action OnSpeedScale;
+
         private void Update()
         {
             MoveInputHandler();
             RotateInputHandler();
             ZoomInputHandler();
+            SpeedScale();
+        }
+
+        private void SpeedScale()
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                OnSpeedScale?.Invoke();
+            }
         }
 
         private void MoveInputHandler()

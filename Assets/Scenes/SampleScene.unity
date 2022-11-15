@@ -1219,7 +1219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b3a81638016e5945866f22c1b80c840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _retreat: 20
+  _retreat: 30
   _workField: {fileID: 288502638}
 --- !u!1 &1278916495
 GameObject:
