@@ -51,11 +51,11 @@ namespace MovementCamera
         {
             if (Input.GetKey(KeyCode.E))
             {
-                OnRotateInput?.Invoke(-1f);
+                OnRotateInput?.Invoke(new Vector2(-1f, 0));
             }
             if (Input.GetKey(KeyCode.Q))
             {
-                OnRotateInput?.Invoke(1f);
+                OnRotateInput?.Invoke(new Vector2(1f,0));
             }
         }
 

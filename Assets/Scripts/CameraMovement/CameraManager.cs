@@ -16,6 +16,8 @@ namespace MovementCamera
         [SerializeField] private float _lateralSpeed = 5f;
         [SerializeField] private float _rotateSpeed = 5f;
         [SerializeField] private float _speedScale = 2f;
+        [SerializeField] private float _minAngle = -0.6f;
+        [SerializeField] private float _maxAngle = 0f;
 
         [Header("Move Bounds")]
         [SerializeField] private Vector2 _minBounds, _maxBounds;
@@ -28,9 +30,10 @@ namespace MovementCamera
 
         private IZoomBehaviour _zoomBehaviour;
         private Vector3 _frameMove;
-        private float _frameRotate;
+        private Vector2 _frameRotate;
         private float _frameZoom;
         private Camera _camera;
+        private GameObject _rotatingAssembly;
 
         [SerializeField] private GameObject[] _testList;
         private GameObject _currentTarget;
@@ -38,10 +41,11 @@ namespace MovementCamera
 
         private void Awake()
         {
+            _rotatingAssembly = transform.GetChild(0).gameObject;
+            _rotatingAssembly.transform.localRotation = Quaternion.Euler(-45,0,0);
             _camera = GetComponentInChildren<Camera>();
-            _camera.transform.localPosition = new Vector3(0f, Mathf.Abs(_cameraOffset.y), - Mathf.Abs(_cameraOffset.x));
+            _camera.transform.localPosition = new Vector3(0f, Mathf.Abs(_cameraOffset.y), 0);
             _zoomBehaviour = _camera.orthographic ? (IZoomBehaviour) new OrtographicZoomBehaviour(_camera, _startingZoom) : new PerspectiveZoomBehaviour(_camera, _cameraOffset, _startingZoom);
-            _camera.transform.LookAt(transform.position + Vector3.up * _lookAtOffset);
         }
 
         private void Update()
@@ -146,7 +150,7 @@ namespace MovementCamera
             _frameMove += moveVector;
         }
         
-        private void UpdateFrameRotate(float rotateAmount)
+        private void UpdateFrameRotate(Vector2 rotateAmount)
         {
             _frameRotate += rotateAmount;
         }
@@ -162,14 +166,14 @@ namespace MovementCamera
             {
                 Vector3 speedModFrameMove = new Vector3(_frameMove.x * _lateralSpeed, _frameMove.y, _frameMove.z * _inOutSpeed);
                 transform.position += transform.TransformDirection(speedModFrameMove) * Time.deltaTime;
-                LockPositionInBounds();
                 _frameMove = Vector3.zero;
             }
 
-            if (_frameRotate != 0f)
+            if (_frameRotate != new Vector2())
             {
-                transform.Rotate(Vector3.up, _frameRotate * Time.deltaTime * _rotateSpeed);
-                _frameRotate = 0f;
+                transform.Rotate(Vector3.up, _frameRotate.x * Time.deltaTime * _rotateSpeed);
+                _rotatingAssembly.transform.Rotate(Vector3.right, _frameRotate.y * Time.deltaTime * _rotateSpeed);
+                _frameRotate = new Vector2();
             }
 
             if (_frameZoom < 0f)
@@ -182,6 +186,8 @@ namespace MovementCamera
                 _zoomBehaviour.ZoomOut(_camera, Time.deltaTime *_frameZoom * _zoomSpeed, _farZoomLimit);
                 _frameZoom = 0;
             }
+
+            LockPositionInBounds();
         }
 
         private void LockPositionInBounds()
@@ -191,6 +197,11 @@ namespace MovementCamera
                 transform.position.y,
                 Mathf.Clamp(transform.position.z, _minBounds.y, _maxBounds.y)
                 );
+
+            var angles = _rotatingAssembly.transform.localRotation;
+            angles.x = Mathf.Clamp(angles.x, _minAngle, _maxAngle);
+            
+            _rotatingAssembly.transform.localRotation = angles;
         }
     }
 }

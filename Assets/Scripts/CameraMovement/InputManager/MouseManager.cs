@@ -16,7 +16,7 @@ namespace MovementCamera
         public static Action<Vector3> OnShiftInput;
 
         private Vector2Int _screen;
-        private float _mousePositionOnRotateStart;
+        private Vector2 _mousePositionOnRotateStart;
 
         private Plane _dragPlane;
         private Vector3 _mousePos;
@@ -134,17 +134,10 @@ namespace MovementCamera
         {
             if (Input.GetMouseButtonDown(1))
             {
-                _mousePositionOnRotateStart = mousePosition.x;
+                _mousePositionOnRotateStart = mousePosition;
             }else if (Input.GetMouseButton(1))
             {
-                if (mousePosition.x < _mousePositionOnRotateStart)
-                {
-                    OnRotateInput?.Invoke(-1f);
-                }
-                else if(mousePosition.x > _mousePositionOnRotateStart)
-                {
-                    OnRotateInput?.Invoke(1f);
-                }
+                OnRotateInput?.Invoke( new Vector2(mousePosition.x - _mousePositionOnRotateStart.x, mousePosition.y - _mousePositionOnRotateStart.y));
             }
         }
         

@@ -10,7 +10,7 @@ namespace MovementCamera
 
         public PerspectiveZoomBehaviour(Camera camera, Vector3 offset, float startingZoom)
         {
-            _normolizedCameraPosition = new Vector3(0f, Mathf.Abs(offset.y), -Mathf.Abs(offset.x)).normalized;
+            _normolizedCameraPosition = new Vector3(0f, Mathf.Abs(offset.y), 0f).normalized;
             _currentZoomLevel = startingZoom;
             PositonCamera(camera);
         }
