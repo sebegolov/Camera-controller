@@ -1256,7 +1256,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2071727051}
-  - component: {fileID: 2071727052}
   - component: {fileID: 2071727053}
   m_Layer: 0
   m_Name: CameraController
@@ -1280,27 +1279,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2071727052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2071727050}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1002522f80682aa45b1b1ffb7135632e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cameraTarget: {fileID: 2071727050}
-  _camera: {fileID: 963194225}
-  _cameraTransform: {fileID: 2071727051}
-  _normalSpeed: 0.2
-  _fastSpeed: 1.5
-  _movementSpeed: 1
-  _movementTime: 5
-  _rotationAmount: 0.3
-  _zoomAmount: {x: 0, y: 0, z: 0}
 --- !u!114 &2071727053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1318,16 +1296,15 @@ MonoBehaviour:
   _inOutSpeed: 5
   _lateralSpeed: 5
   _rotateSpeed: 1
-  _speedScale: 3
+  _speedScale: 6
   _minAngle: -0.6
   _maxAngle: 0
   _minBounds: {x: 0, y: 0}
   _maxBounds: {x: 1000, y: 1000}
   _zoomSpeed: 4
   _nearZoomLimit: 2
-  _farZoomLimit: 50
+  _farZoomLimit: 150
   _startingZoom: 5
-  _testList:
-  - {fileID: 887782517}
-  - {fileID: 265746273}
-  - {fileID: 337896483}
+  _onMoving: 1
+  _onRotate: 1
+  _onZoom: 1

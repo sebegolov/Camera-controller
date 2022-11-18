@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UI;
 
 
 namespace MovementCamera
@@ -14,6 +12,7 @@ namespace MovementCamera
         public static event ZoomInputHandler OnZoomInput;
 
         public static Action<Vector3> OnShiftInput;
+        public static Action<bool> OnMouseRotate;
 
         private Vector2Int _screen;
         private Vector2 _mousePositionOnRotateStart;
@@ -53,15 +52,10 @@ namespace MovementCamera
             MoveInputHandler_Drag();
         }
 
-        private void LateUpdate()
-        {
-            //MoveInputHandler_Drag();
-        }
-
         private void MoveInputHandler_Drag()
         {
             
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(1))
             {
                 Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
@@ -69,12 +63,15 @@ namespace MovementCamera
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
                     _mousePos = new Vector3(hit.point.x, 0 , hit.point.z);
-                    _dragPlane = new Plane(Vector3.up, hit.point);
-                    drag = true;
+                    if (hit.point.y < _camera.transform.position.y)
+                    {
+                        _dragPlane = new Plane(Vector3.up, hit.point);
+                        drag = true;
+                    }
                 }
             }
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(1))
             {
                 if (!drag)
                 {
@@ -101,7 +98,7 @@ namespace MovementCamera
                 Debug.DrawRay(_camera.transform.position, ray.GetPoint(planeDistance), Color.red);
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(1))
             {
                 drag = false;
             }
@@ -130,8 +127,18 @@ namespace MovementCamera
             }
         }
         
+        
         private void RotateInputHandler(Vector3 mousePosition)
         {
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                OnMouseRotate?.Invoke(true);
+            }            
+            if (Input.GetKeyUp(KeyCode.LeftControl))
+            {
+                OnMouseRotate?.Invoke(false);
+            }
+            
             if (Input.GetMouseButtonDown(1))
             {
                 _mousePositionOnRotateStart = mousePosition;
